@@ -1,73 +1,58 @@
 # -*- coding=UTF-8 -*-
-import sys
-import re
 
-if len(sys.argv) != 2:
-	print u'Ошибка: должен быть ровно один аргумент командной строки!'.encode('utf-8')
-	exit(1)
+from __future__ import unicode_literals
 
-#for arg in sys.argv:
-#	print arg
+from goldendict_reader import GoldenDictReader
 
-filename = sys.argv[1].decode('utf-8')
-try:
-	f = open(filename, 'r')
-except:
-	print (u'Ошибка: невозможно открыть файл "%s"!' % filename).encode('utf-8')
-	exit(1)
 
-#for line in f:
-#	line = line.decode('utf-8')
-#	print (replaceref(line)).encode('utf-8'),
+class GoldenDictSorter(GoldenDictReader):
 
-lines = []
+    def _sort(self, articles, is_lower=False):
+        do_lower = lambda str, is_lower: str.lower() if is_lower else str
+        alphabet = 'аӓбвгдеёжӝзӟиіӥйклмнҥоӧпрстуӱфхцчӵшщъыӹьэюя'
+        if not is_lower:
+            alphabet += alphabet.upper()
+        alphabet_dict = dict([(x, alphabet.index(x)) for x in alphabet])
 
-for line in f:
-	lines.append(line)
+        def only_alphabet_chars(str, alphabet):
+            for letter in str:
+                if not letter in alphabet:
+                    str = str.replace(letter, '')
+            return str
 
-name = u''
-text = u''
+        articles = sorted(
+            articles,
+            key=lambda word: [
+                alphabet_dict[c] for c in only_alphabet_chars(
+                    do_lower(
+                        word['name'],
+                        is_lower
+                    ),
+                    alphabet
+                )
+            ]
+        )
+        return articles
 
-articles = []
+    def process(self, articles):
 
-header = []
+        '''
+        alphabet = 'аӓбвгдеёжӝзӟиіӥйклмнҥоӧпрстуӱфхцчӵшщъыӹьэюя'
+        alphabet_dict = dict([(x, alphabet.index(x)) for x in alphabet])
 
-for i in range(len(lines)):
-	line = lines[i]
-	line = line.decode('utf-8')
-	if line[0] == '#':
-		header.append(line)
-	else:
-		if line[0] != '\t':
-			# начинаем новую статью
-			if name != '':
-				articles.append({
-					'name': name,
-					'text': text,
-				})
-			name = line.replace('\n','')
-			text = u''
-		else:
-			text += line
-		if i == len(lines) - 1:
-			articles.append({
-				'name': name,
-				'text': text,
-			})
-# (),-.;
-#АЙКЭабвгдежзийклмнопрстуфхцчшщъыьэюяёҥӓӧӱӹіӥӵӟӝ
+        articles = sorted(
+            articles,
+            key=lambda word: [
+                alphabet_dict[c] for c in remove_chars(
+                    word['name'], ' (),-.;').lower()
+            ])
+        '''
 
-alphabet = u'аӓбвгдеёжӝзӟиіӥйклмнҥоӧпрстуӱфхцчӵшщъыӹьэюяАӒБВГДЕЁЖӜЗӞИІӤЙКЛМНҤОӦПРСТУӰФХЦЧӴШЩЪЫӸЬЭЮЯ'
-alphabet_dict = dict([(x, alphabet.index(x)) for x in alphabet])
-articles = sorted(articles, key=lambda word: [alphabet_dict[c] for c in word['name'].replace(' ','').replace('(','').replace(')','').replace(',','').replace('-','').replace('.','').replace(';','')])
+        articles = self._sort(articles, False)
+        articles = self._sort(articles, True)
 
-alphabet = u'аӓбвгдеёжӝзӟиіӥйклмнҥоӧпрстуӱфхцчӵшщъыӹьэюя'
-alphabet_dict = dict([(x, alphabet.index(x)) for x in alphabet])
-articles = sorted(articles, key=lambda word: [alphabet_dict[c] for c in word['name'].replace(' ','').replace('(','').replace(')','').replace(',','').replace('-','').replace('.','').replace(';','').lower()])
+        return articles
 
-for h in header:
-	print h.encode('utf-8'),
-
-for a in articles:
-	print a['name'].encode('utf-8')
-	print a['text'].encode('utf-8'),
+if __name__ == '__main__':
+    import sys
+    GoldenDictSorter()(sys.argv)
