@@ -13,6 +13,7 @@ import StringIO
 from goldendict_reader import GoldenDictReader
 from sort import GoldenDictSorter
 from tilde import GoldenDictTildeProcessor
+from refxxx import GoldenDictRefXXXProcessor
 # last line of imports
 
 
@@ -77,6 +78,32 @@ class GoldenDictScriptsTestCase(unittest.TestCase):
         stdout.seek(0)
         '''
         self.assertEqual(original, stdout.readlines())
+
+    def _test_class_works_well(self, klass, original_filename,
+                               processed_filename):
+        stdout = StringIO.StringIO()
+        stderr = StringIO.StringIO()
+        original_file = open(self.filename(processed_filename))
+        original = [line for line in original_file]
+        original_file.close()
+        klass()(
+            ['sort.py', self.filename(original_filename)],
+            stdout=stdout,
+            stderr=stderr
+        )
+        self.maxDiff = None
+        stdout.seek(0)
+        '''
+        for x in stdout.readlines():
+            print x
+        stdout.seek(0)
+        '''
+        self.assertEqual(original, stdout.readlines())
+
+    def test_refxxx_works_well(self):
+        self._test_class_works_well(GoldenDictRefXXXProcessor,
+                                    'refxxx_original.txt',
+                                    'refxxx_processed.txt')
 
     def tearDown(self):
         pass

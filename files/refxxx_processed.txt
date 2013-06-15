@@ -1,0 +1,15 @@
+аба
+	<tt><acronym title="диалектное"><em>диал.</em></acronym> <span class="underline">смотри:</span> <xref link="аби"> аби Ⅰ 1</xref></tt>
+	
+абага
+	<tt><acronym title="ботаника"><em>бот.</em></acronym></tt><br />
+	<tt>1) таволга; лабазник</tt><br />
+	<tt>2) папоротник || папоротниковый</tt>
+	
+абагыкуар
+	<tt><span class="underline">смотри:</span> <xref link="абага"> абага 2</xref></tt>
+	
+абак
+	<tt><acronym title="диалектное"><em>диал.</em></acronym> пятнашки; ляпки <acronym title="областное слово, выражение"><em>обл.</em></acronym> <em>(детская игра)</em>;</tt><br />
+	&#160;&#160;&#160;<stress>абакен шудон</stress> игра в пятнашки; <span class="underline">смотри также:</span> <xref link="ляпа"> ляпа Ⅰ</xref><br />
+	
