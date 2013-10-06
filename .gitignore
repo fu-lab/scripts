@@ -1,2 +1,4 @@
 *.py[doc]
 tmp
+*.swp
+.ropeproject
