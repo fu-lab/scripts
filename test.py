@@ -100,10 +100,16 @@ class GoldenDictScriptsTestCase(unittest.TestCase):
         '''
         self.assertEqual(original, stdout.readlines())
 
-    def test_refxxx_works_well(self):
+    def do_test_refxxx_works_well(self, s):
         self._test_class_works_well(GoldenDictRefXXXProcessor,
-                                    'refxxx_original.txt',
-                                    'refxxx_processed.txt')
+                                    'refxxx_original%s.txt' % s,
+                                    'refxxx_processed%s.txt' % s)
+
+    def test_refxxx_works_well(self):
+        self.do_test_refxxx_works_well('')
+
+    def test_refxxx_works_well1(self):
+        self.do_test_refxxx_works_well('1')
 
     def tearDown(self):
         pass
